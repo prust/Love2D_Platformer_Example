@@ -60,6 +60,4 @@ function DynamicEntity:updatePhysics(dt)
 
 	self.x = self.x + self.direction*self.xVel*dt
 	self.y = self.y + (self.yVel)*dt
-  
-  
 end

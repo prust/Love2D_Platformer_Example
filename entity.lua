@@ -13,9 +13,6 @@ function Entity:new(x, y, width, height, image, world, ent_name)
   end
 end
 
-
-
-
 function Entity:draw()
   if self.image ~= nil then
     love.graphics.draw(self.image, self.x, self.y)

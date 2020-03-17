@@ -30,21 +30,6 @@ function DynamicEntity:new(x, y, width, height, image, world, maxVelX, maxVelY, 
   GRAVITY = world.gravity or 9.8
 end
 
-function DynamicEntity:checkCols(cols)
-  self.grounded = false
-	for i,v in ipairs (cols) do
-		if cols[i].normal.y == -1 then
-			self.yVel = 0
-			self.grounded = true
-		elseif cols[i].normal.y == 1 then
-			self.yVel = -self.yVel/4
-		end
-		if cols[i].normal.x ~= 0 then
-			self.xVel = 0
-		end
-	end
-end
-
 function DynamicEntity:updatePhysics(dt)
   if self.grounded == true then
     self.xVel = self.xVel - 50 * dt * physicsMult
@@ -52,7 +37,9 @@ function DynamicEntity:updatePhysics(dt)
     self.xVel = self.xVel - (8 * self.mass) * dt * physicsMult
   end
 	
-	self.yVel = self.yVel + (GRAVITY) * dt * physicsMult
+  if not self.isLaddering then
+    self.yVel = self.yVel + (GRAVITY) * dt * physicsMult
+  end
 
 	if self.xVel > self.maxVelX then self.xVel = self.maxVelX end
 

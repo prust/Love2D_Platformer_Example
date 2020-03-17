@@ -9,6 +9,7 @@ function Player:new(x, y, width, height, image, world, maxVelX, maxVelY, speed)
   self.speed = speed
   self.image = image;
   self.isGripping = false;
+  self.isLaddering = false;
   self.grippedEntity = nil;
   self.origMaxVel = maxVelX;
   
@@ -46,28 +47,6 @@ function Player:draw()
   end
 end
 
-function Player:checkCols(cols)
-  Player.super:checkCols(cols)
-  self.grounded = false
-	for i,v in ipairs (cols) do
-    local otherName = cols[i].other.name 
-    if otherName == "ent_crate" and cols[i].normal.y ~= -1 then
-      cols[i].other.direction = self.direction
-      cols[i].other.xVel = (self.xVel);
-    end
-    
-		if cols[i].normal.y == -1 then
-			self.yVel = 0
-			self.grounded = true
-		elseif cols[i].normal.y == 1 then
-			self.yVel = -self.yVel/4
-		end
-		if cols[i].normal.x ~= 0 and cols[i].other.xVel == nil then
-			self.xVel = 0
-		end
-	end
-end
-
 function Player:isEntityGrippable(entity)
   local yReq = math.abs(entity.h - self.h) + 3
   local xReq = math.abs(entity.w / 2 + self.w / 2) + 5
@@ -103,6 +82,14 @@ function Player:moveLeft(dt)
   if self.direction == 1 then
     self.xVel = 0
   end
+end
+
+function Player:ladderUp(dt)
+  self.yVel = self.yVel - self.speed
+end
+
+function Player:ladderDown(dt)
+  self.yVel = self.yVel + self.speed
 end
 
 function Player:jump(dt)

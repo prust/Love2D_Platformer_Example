@@ -34,15 +34,21 @@ function love.update(dt)
   if love.keyboard.isDown( "d" ) then
     game.player:moveRight(dt)
   elseif love.keyboard.isDown("a") then
-    game.player:moveLeft(dt);
+    game.player:moveLeft(dt)
   end
   
   if love.keyboard.isDown("w") then
-    game.player:jump(dt)
+    if game.player.isLaddering then
+      game.player:ladderUp(dt)
+    else
+      game.player:jump(dt)
+    end
   end
   
   if love.keyboard.isDown("s") then
-    if game.player.isGripping == false then
+    if game.player.isLaddering then
+      game.player:ladderDown(dt)
+    elseif game.player.isGripping == false then
       for i=1,#game.entities do
         if game.player:isEntityGrippable(game.entities[i]) then
           game.player.isGripping = true;
@@ -67,13 +73,20 @@ function love.update(dt)
     if game.entities[i]:is(DynamicEntity) then
       game.entities[i]:updatePhysics(dt)
     end
-    game.entities[i].x, game.entities[i].y, cols = game.world:move( game.entities[i], game.entities[i].x, game.entities[i].y )
+    game.entities[i].x, game.entities[i].y, cols = game.world:move( game.entities[i], game.entities[i].x, game.entities[i].y, getCollType )
     checkCols(game.entities[i], cols)
   end
   
   game.player:update(dt)
 end
 
+function getCollType(item, other)
+  if other.name == "ent_ladder" then
+    return "cross"
+  else
+    return "slide"
+  end
+end
 
 function love.draw()
   love.graphics.setColor( 255,255,255,255 )
@@ -118,6 +131,9 @@ function loadLevel()
     elseif object.name == "spike" then
       local spike = Entity(object.x, object.y, object.width, object.height, nil, game.world, "ent_spike")
       table.insert(game.entities, spike)
+    elseif object.name == "ladder" then
+      local ladder = Entity(object.x, object.y, object.width, object.height, nil, game.world, "ent_ladder")
+      table.insert(game.entities, ladder)
     elseif object.name == "level_end" then
       local level_end = Entity(object.x, object.y, 35, 50, nil, game.world, "ent_level_end")
       level_end.nextMap = object.properties.next_map;
@@ -132,6 +148,7 @@ function checkCols(entity, cols)
   local thisName = entity.name
   
   entity.grounded = false
+  local is_laddering = false
   for i,v in ipairs (cols) do
     local otherName = cols[i].other.name
     
@@ -145,16 +162,26 @@ function checkCols(entity, cols)
       loadLevel();
     elseif thisName == "ent_player" and otherName == "ent_spike" then
       loadLevel();
+    elseif thisName == "ent_player" and otherName == "ent_ladder" then
+      is_laddering = true
     end
     
-    if cols[i].normal.y == -1 then
-      entity.yVel = 0
-      entity.grounded = true
-    elseif cols[i].normal.y == 1 then
-      entity.yVel = -entity.yVel/4
+    -- TODO: switch this to a check for whether the entity is dynamic
+    if entity.name ~= "ent_ladder" then
+      if cols[i].normal.y == -1 then
+        entity.yVel = 0
+        entity.grounded = true
+      elseif cols[i].normal.y == 1 then
+        entity.yVel = -entity.yVel/4
+      end
+      if cols[i].normal.x ~= 0 and otherName == nil then
+        entity.xVel = 0
+      end
     end
-    if cols[i].normal.x ~= 0 and otherName == nil then
-      entity.xVel = 0
-    end
+  end
+
+  -- if any current collisions are w/ a ladder then player is in "laddering" movement mode
+  if thisName == "ent_player" then
+    entity.isLaddering = is_laddering
   end
 end

@@ -13,7 +13,7 @@ local GRAVITY = 14.8;
 
 function love.load()
   love.window.setMode(1280, 736)
-  love.graphics.setBackgroundColor(90, 230, 252)
+  love.graphics.setBackgroundColor(0, 0, 0)
   
   game = {
     level = "maps/test_map.lua",
@@ -123,7 +123,7 @@ function loadLevel()
   
   for k, object in pairs(game.map.objects) do
     if object.name == "player_spawn" then
-      game.player = Player(object.x, object.y, 28, 49, game.charImage, game.world, 200, 64, 100)
+      game.player = Player(object.x, object.y, 28, 49, game.charImage, game.world, 400, 64, 100)
       table.insert(game.entities, game.player)      
     elseif object.name == "box" then
       local box = DynamicEntity(object.x, object.y, 32, 32, game.crate, game.world, 200, 64, "ent_crate", 10);
@@ -131,6 +131,9 @@ function loadLevel()
     elseif object.name == "spike" then
       local spike = Entity(object.x, object.y, object.width, object.height, nil, game.world, "ent_spike")
       table.insert(game.entities, spike)
+    elseif object.name == "solid" then
+      local spike = Entity(object.x, object.y, object.width, object.height, nil, game.world, "ent_solid")
+      table.insert(game.entities, solid)
     elseif object.name == "ladder" then
       local ladder = Entity(object.x, object.y, object.width, object.height, nil, game.world, "ent_ladder")
       table.insert(game.entities, ladder)

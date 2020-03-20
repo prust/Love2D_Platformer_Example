@@ -170,7 +170,7 @@ function checkCols(entity, cols)
     end
     
     -- TODO: switch this to a check for whether the entity is dynamic
-    if entity.name ~= "ent_ladder" then
+    if entity.name ~= "ent_ladder" and entity.name ~= "ent_spike" then
       if cols[i].normal.y == -1 then
         entity.yVel = 0
         entity.grounded = true

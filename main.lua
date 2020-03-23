@@ -140,7 +140,7 @@ function loadLevel()
       local spike = Entity(object.x, object.y, object.width, object.height, nil, game.world, "ent_spike")
       table.insert(game.entities, spike)
     elseif object.name == "solid" then
-      local spike = Entity(object.x, object.y, object.width, object.height, nil, game.world, "ent_solid")
+      local solid = Entity(object.x, object.y, object.width, object.height, nil, game.world, "ent_solid")
       table.insert(game.entities, solid)
     elseif object.name == "ladder" then
       local ladder = Entity(object.x, object.y, object.width, object.height, nil, game.world, "ent_ladder")

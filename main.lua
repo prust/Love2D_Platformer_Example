@@ -11,6 +11,9 @@ local entities = {}
 local game;
 local GRAVITY = 14.8;
 
+-- require("mobdebug").start()
+-- this slows the game; only run it when you're ready to drop into debugging
+
 function love.load()
   love.window.setMode(1280, 736)
   love.graphics.setBackgroundColor(0, 0, 0)
@@ -70,6 +73,11 @@ function love.update(dt)
   end
   
   for i=1,#game.entities do
+    -- the game.entities table can shrink when switching to a new level
+    if i >= #game.entities then
+      break
+    end
+  
     if game.entities[i]:is(DynamicEntity) then
       game.entities[i]:updatePhysics(dt)
     end

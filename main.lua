@@ -92,7 +92,7 @@ function love.draw()
   love.graphics.setColor( 255,255,255,255 )
   game.map:draw()
   
-  love.graphics.setColor(255, 255, 0, 255)
+  love.graphics.setColor(255, 255, 225, 255)
 
   --game.map:bump_draw(game.world)
   --love.graphics.print(game.player.yVel..game.debug..tostring(game.player.grounded))

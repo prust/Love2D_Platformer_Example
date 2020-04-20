@@ -131,7 +131,7 @@ function loadLevel()
   
   for k, object in pairs(game.map.objects) do
     if object.name == "player_spawn" then
-      game.player = Player(object.x, object.y, 28, 49, game.charImage, game.world, 400, 64, 100)
+      game.player = Player(object.x, object.y, 28, 49, game.charImage, game.world, 200, 64, 100)
       table.insert(game.entities, game.player)      
     elseif object.name == "box" then
       local box = DynamicEntity(object.x, object.y, 32, 32, game.crate, game.world, 200, 64, "ent_crate", 10);
